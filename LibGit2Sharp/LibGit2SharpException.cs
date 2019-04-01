@@ -57,6 +57,19 @@ namespace LibGit2Sharp
         {
             Data.Add("libgit2.code", (int)code);
             Data.Add("libgit2.category", (int)category);
+
+            GitErrorCode = code;
+            GitErrorCategory = category;
         }
+
+        /// <summary>
+        /// The error code returned by libgit2
+        /// </summary>
+        public GitErrorCode GitErrorCode { get; }
+
+        /// <summary>
+        /// The error category
+        /// </summary>
+        public  GitErrorCategory GitErrorCategory { get;  }
     }
 }
