@@ -30,11 +30,6 @@ namespace LibGit2Sharp
                 throw new InvalidOperationException("SshUserKeyCredentials contains a null Passphrase.");
             }
 
-            if (PublicKey == null)
-            {
-                throw new InvalidOperationException("SshUserKeyCredentials contains a null PublicKey.");
-            }
-
             if (PrivateKey == null)
             {
                 throw new InvalidOperationException("SshUserKeyCredentials contains a null PrivateKey.");
@@ -50,6 +45,7 @@ namespace LibGit2Sharp
 
         /// <summary>
         /// Public key file location for SSH authentication.
+        /// <para>If the public key is null, it will be derived from the private key</para>
         /// </summary>
         public string PublicKey { get; set; }
 
