@@ -43,6 +43,14 @@ namespace LibGit2Sharp.Core
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 #endif
                     {
+                        foreach(var dependency in new[] { "libcrypto-1_1.dll", "libcrypto-1_1-x64.dll", "libssh2.dll" })
+                        {
+                            var path = Path.Combine(nativeLibraryDir, dependency);
+                            if (File.Exists(path))
+                            {
+                                LoadWindowsLibrary(path);
+                            }
+                        }
                         LoadWindowsLibrary(nativeLibraryPath);
                     }
                     else
