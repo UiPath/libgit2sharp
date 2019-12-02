@@ -19,5 +19,7 @@ namespace LibGit2Sharp.Core
         public IntPtr CredentialsCb;
         public IntPtr CertificateCheck;
         public IntPtr CbPayload;
+
+        public static GitProxyOptions Create() => new GitProxyOptions { Version = 1, Type = GitProxyType.Auto };
     }
 }
