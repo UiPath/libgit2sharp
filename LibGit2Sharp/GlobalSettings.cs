@@ -36,7 +36,8 @@ namespace LibGit2Sharp
             }
             else
             {
-                nativeLibraryDefaultPath = null;
+                string arch = Environment.Is64BitProcess ? "win-x64" : "win-x86";
+                nativeLibraryDefaultPath = Path.Combine(GetExecutingAssemblyDirectory(), "runtimes", arch, "native");
             }
 
             registeredFilters = new Dictionary<Filter, FilterRegistration>();
