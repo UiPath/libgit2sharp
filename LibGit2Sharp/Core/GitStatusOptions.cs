@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace LibGit2Sharp.Core
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal class GitStatusOptions : IDisposable
+    internal unsafe sealed class GitStatusOptions : IDisposable
     {
         public uint Version = 1;
 
@@ -12,6 +12,8 @@ namespace LibGit2Sharp.Core
         public GitStatusOptionFlags Flags;
 
         public GitStrArrayManaged PathSpec;
+
+        public git_tree* baseline = default;
 
         public void Dispose()
         {
