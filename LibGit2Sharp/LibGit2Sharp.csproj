@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>net461;net6.0-windows</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>LibGit2Sharp brings all the might and speed of libgit2, a native Git implementation, to the managed world of .Net and Mono.</Description>
     <Company>LibGit2Sharp contributors</Company>
