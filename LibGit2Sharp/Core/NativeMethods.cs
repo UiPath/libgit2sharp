@@ -2134,6 +2134,14 @@ namespace LibGit2Sharp.Core
             int direction,
             IntPtr payload);
 
+       [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate int remote_update_refs_callback(
+            IntPtr refName,
+            ref GitOid oldId,
+            ref GitOid newId,
+            IntPtr spec,
+            IntPtr data);
+
         [DllImport(libgit2, CallingConvention = CallingConvention.Cdecl)]
         internal static extern unsafe void git_worktree_free(git_worktree* worktree);
 
