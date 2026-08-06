@@ -12,14 +12,14 @@ env:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-22.04
+    runs-on: uipath-ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
         with:
           fetch-depth: 0
       - name: Install .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9  # v4.3.1
         with:
           dotnet-version: |
             6.0.x
@@ -32,7 +32,7 @@ jobs:
       - name: Build
         run: dotnet build LibGit2Sharp.sln --configuration Release
       - name: Upload packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
           name: NuGet packages
           path: bin/Packages/
@@ -48,18 +48,18 @@ jobs:
         # Windows/Linux runners and a scarce Intel mac). The old dockerized multi-distro matrix was
         # dropped: it pinned .NET 6/7 SDK images and included alpine/musl, which our glibc-linked
         # linux natives can't run anyway.
-        os: [ windows-latest, ubuntu-latest, macos-14 ]
+        os: [ windows-latest, uipath-ubuntu-latest, macos-14 ]
         # Mirror NetCoreVersion in Directory.Build.props (net6.0). A workflow matrix can't read an
         # MSBuild property, so keep the two in sync by hand when bumping the target framework.
         tfm: [ net6.0 ]
       fail-fast: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
         with:
           fetch-depth: 0
       - name: Install .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9  # v4.3.1
         with:
           dotnet-version: |
             6.0.x
@@ -80,12 +80,12 @@ jobs:
     # feed-publish step can pull it straight from the release (gh release download) instead of
     # rebuilding locally. No feed push happens here — that stays a deliberate manual step.
     if: github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-latest
+    runs-on: uipath-ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Download packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4.3.0
         with:
           name: NuGet packages
           path: packages
