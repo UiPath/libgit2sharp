@@ -172,7 +172,7 @@ namespace LibGit2Sharp.Tests
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void CheckoutSucceedsWhenAnEmptiedDirectoryIsHeldOpenByAnotherProcess()
         {
             InconclusiveIf(() => Constants.IsRunningOnUnix, "Only Windows refuses to remove a directory that another process holds open");
