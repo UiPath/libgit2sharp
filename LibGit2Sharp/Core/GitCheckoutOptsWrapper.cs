@@ -25,7 +25,9 @@ namespace LibGit2Sharp.Core
             Options = new GitCheckoutOpts
             {
                 version = 1,
-                checkout_strategy = options.CheckoutStrategy,
+                // Git ignores a failed removal of an emptied directory. Without this flag libgit2 fails the whole
+                // checkout when another process holds the directory open, even though every file was updated.
+                checkout_strategy = options.CheckoutStrategy | CheckoutStrategy.GIT_CHECKOUT_SKIP_LOCKED_DIRECTORIES,
                 progress_cb = Callbacks.CheckoutProgressCallback,
                 notify_cb = Callbacks.CheckoutNotifyCallback,
                 notify_flags = options.CheckoutNotifyFlags,
