@@ -1,5 +1,10 @@
 # LibGit2Sharp Changes
 
+## UiPath fork - unreleased
+
+### Changes
+- Every checkout, including the ones performed by rebase, reset, merge and stash, passes `GIT_CHECKOUT_SKIP_LOCKED_DIRECTORIES`. A directory that another process holds open is left behind empty instead of failing the operation with `could not rmdir`, which matches command-line git.
+
 ## v0.27.2 - ([diff](https://github.com/libgit2/libgit2sharp/compare/0.27.1..0.27.2))
 
 ### Changes

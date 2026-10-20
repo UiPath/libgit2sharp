@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 using LibGit2Sharp.Tests.TestHelpers;
 using Xunit;
 using Xunit.Extensions;
@@ -169,6 +171,56 @@ namespace LibGit2Sharp.Tests
                 Assert.Equal(originalFileContent, File.ReadAllText(fileFullPath));
             }
         }
+
+        [SkippableFact]
+        public void CheckoutSucceedsWhenAnEmptiedDirectoryIsHeldOpenByAnotherProcess()
+        {
+            InconclusiveIf(() => Constants.IsRunningOnUnix, "Only Windows refuses to remove a directory that another process holds open");
+
+            string repoPath = InitNewRepository();
+
+            using (var repo = new Repository(repoPath))
+            {
+                string directory = Path.Combine(repo.Info.WorkingDirectory, "data");
+                string filePath = Touch(directory, "only.txt", "content");
+                Commands.Stage(repo, filePath);
+                repo.Commit("add", Constants.Signature, Constants.Signature);
+                Branch withFile = repo.CreateBranch("with-file");
+
+                Commands.Remove(repo, filePath);
+                repo.Commit("remove", Constants.Signature, Constants.Signature);
+                string withoutFile = repo.Head.FriendlyName;
+
+                Commands.Checkout(repo, withFile);
+                Assert.True(File.Exists(filePath));
+
+                using (SafeFileHandle handle = OpenDirectoryWithoutDeleteSharing(directory))
+                {
+                    Assert.False(handle.IsInvalid);
+                    Commands.Checkout(repo, repo.Branches[withoutFile]);
+                }
+
+                Assert.False(File.Exists(filePath));
+                Assert.True(Directory.Exists(directory));
+                Assert.False(repo.RetrieveStatus().IsDirty);
+                Assert.Equal(withoutFile, repo.Head.FriendlyName);
+            }
+        }
+
+        // Same kind of handle Explorer or a shell keeps on its current directory: files inside can still be
+        // deleted, but RemoveDirectory on the directory itself fails with a sharing violation.
+        private static SafeFileHandle OpenDirectoryWithoutDeleteSharing(string directory)
+        {
+            const uint GENERIC_READ = 0x80000000;
+            const uint FILE_SHARE_READ_WRITE = 0x00000003;
+            const uint OPEN_EXISTING = 3;
+            const uint FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
+
+            return CreateFileW(directory, GENERIC_READ, FILE_SHARE_READ_WRITE, IntPtr.Zero, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, IntPtr.Zero);
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern SafeFileHandle CreateFileW(string fileName, uint desiredAccess, uint shareMode, IntPtr securityAttributes, uint creationDisposition, uint flagsAndAttributes, IntPtr templateFile);
 
         [Fact]
         public void CheckoutRemovesExtraFilesInWorkingDirectory()
